@@ -25,25 +25,19 @@ import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { environment } from "../environments/environment";
 import { OrdenIngresoPipe } from './pipes/orden-ingreso.pipe';
 import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2-charts';
+import { AuthModule } from './auth/auth.module';
+import { SharedModule } from './shared/shared.module';
+import { IngresoEgresoModule } from './ingreso-egreso/ingreso-egreso.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginComponent,
-    RegisterComponent,
-    DashboardComponent,
-    IngresoEgresoComponent,
-    EstadisticaComponent,
-    DetalleComponent,
-    FooterComponent,
-    NavbarComponent,
-    SidebarComponent,
-    OrdenIngresoPipe
+   
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule,
+    AuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
@@ -51,10 +45,9 @@ import { BaseChartDirective, provideCharts, withDefaultRegisterables } from 'ng2
     StoreDevtoolsModule.instrument({
       maxAge: 25,
       logOnly: environment.production
-    }),
-    BaseChartDirective
+    })
   ],
-  providers: [provideCharts(withDefaultRegisterables())],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

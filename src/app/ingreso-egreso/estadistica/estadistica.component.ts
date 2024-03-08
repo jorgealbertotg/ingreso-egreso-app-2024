@@ -4,6 +4,7 @@ import { AppState } from '../../app.reducer';
 import { IngresoEgreso } from '../../models/ingreso-egreso.model';
 import { ChartData, ChartType } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { AppStateWithIngreso } from '../ingreso-egreso.reducer';
 
 @Component({
   selector: 'app-estadistica',
@@ -29,10 +30,10 @@ export class EstadisticaComponent implements OnInit {
 
   public doughnutChartData: ChartData<'doughnut'>;
 
-  constructor(private store: Store<AppState>) {}
+  constructor(private store: Store<AppStateWithIngreso>) {}
 
   ngOnInit(): void {
-    this.store.select("ingresosEgresos").subscribe(ingresosEgresos => {
+    this.store.select("ingresosEgresos").subscribe((ingresosEgresos: any) => {
       this.generarEstadistica(ingresosEgresos.items);
     });
   }
