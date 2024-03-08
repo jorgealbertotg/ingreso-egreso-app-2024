@@ -6,6 +6,7 @@ import { Firestore, Unsubscribe, doc, onSnapshot, setDoc } from '@angular/fire/f
 import { Store } from '@ngrx/store';
 import { AppState } from '../app.reducer';
 import * as authActions from '../auth/auth.actions';
+import * as ingresoEgresoActions from '../ingreso-egreso/ingreso-egreso.actions';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,13 @@ export class AuthService {
 
   userUnsubscribe: Unsubscribe;
 
+  private _user: Usuario;
+
   constructor(private auth: Auth, private fireStore: Firestore, private store: Store<AppState>) { }
+
+  get user() {
+    return { ...this._user };
+  }
 
   initAuthListener() {
     authState(this.auth).subscribe(fuser =>{
@@ -28,15 +35,21 @@ export class AuthService {
           (userDoc) => {
             let firebaseUser = userDoc.data();
             const user = Usuario.fromFirebase(firebaseUser);
+            this._user = user;
+
             this.store.dispatch(authActions.setUser({ user }));
           },
           (err) => { console.error(err); }
         );
       } else {
         if (this.userUnsubscribe) {
+          this._user = null;
           this.userUnsubscribe();
         }
+
         this.store.dispatch(authActions.unsetUser());
+
+        this.store.dispatch(ingresoEgresoActions.unsetItems());
       }
     });
   }
@@ -50,7 +63,7 @@ export class AuthService {
           fbUser.user.email
         );
 
-        return setDoc(doc(this.fireStore, fbUser.user.uid, "usuario"), {...newUser});
+        return setDoc(doc(this.fireStore, fbUser.user.uid, "usuario"), { ...newUser });
       });
   }
 
